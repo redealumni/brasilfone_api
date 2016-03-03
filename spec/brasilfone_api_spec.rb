@@ -1,0 +1,48 @@
+require 'spec_helper'
+require 'brasilfone_api'
+require 'webmock/rspec'
+
+RSpec.describe BrasilfoneAPI do
+  before do
+    BrasilfoneAPI.configure do |config|
+      config.username = 'martianbuddy'
+      config.password = '0508'
+    end
+
+    xml = '<note>
+           <to>Earth</to>
+           <from>Phobos</from>
+           <heading>Strange noises</heading>
+           <body>Staff personnel are complaining about strange noises</body>
+           </note>'
+
+    stub_request(:any, /.*brasilfone.*/)
+      .to_return(body: xml, status: 200,
+                 headers: { 'Content-Length' => 3 })
+  end
+
+  it 'sends sms' do
+    response = BrasilfoneAPI.send_sms('202-456-1111', 'Hello Mr. President')
+    expect(response.class).to eql Hash
+  end
+
+  it 'gets sms status' do
+    response = BrasilfoneAPI.sms_status('sms id')
+    expect(response.class).to eql Hash
+  end
+
+  it 'gets balance' do
+    response = BrasilfoneAPI.balance
+    expect(response.class).to eql Hash
+  end
+
+  it 'finds sms status by range' do
+    response = BrasilfoneAPI.sms_status_by_date_range('12/06/199', '03/03/2016')
+    expect(response.class).to eql Hash
+  end
+
+  it 'finds replies for sms' do
+    response = BrasilfoneAPI.reply_status_for_sms('sms_id')
+    expect(response.class).to eql Hash
+  end
+end
