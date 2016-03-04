@@ -13,9 +13,8 @@ module BrasilfoneAPI
           parameters
         )
 
-        url = URI.parse(uri)
-        request = Net::HTTP::Get.new(url.to_s)
-        response = Net::HTTP.start(url.host, url.port) do |http|
+        request = Net::HTTP::Get.new(uri)
+        response = Net::HTTP.start(uri.host, uri.port) do |http|
           http.request(request)
         end
         XmlHasher.parse(response.body)

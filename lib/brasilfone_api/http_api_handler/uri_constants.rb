@@ -1,7 +1,7 @@
 module BrasilfoneAPI
   module HttpAPIHandler
     module URIConstants
-      BRASILFONE_BASE_URI = 'http://api.brasilfone.com.br/?'.freeze
+      BRASILFONE_BASE_URI = 'http://api.brasilfone.com.br/'.freeze
 
       SERVICES_NAMES = {
         SEND_SMS: 'SendSMS'.freeze,

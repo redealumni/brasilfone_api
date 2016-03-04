@@ -1,22 +1,21 @@
 module BrasilfoneAPI
   module HttpAPIHandler
     module ServiceURI
+      require 'uri'
+
       class << self
         def uri_for_service(service, parameters)
           builder = URIBuilder.new(service, parameters)
           builder.build
-          builder.uri
         end
       end
 
       class URIBuilder
         require 'brasilfone_api/http_api_handler/uri_constants'
-        attr_accessor :uri
 
         def initialize(service, parameters)
           @service = service
           @parameters = parameters
-          @uri = nil
         end
 
         def build
@@ -27,30 +26,38 @@ module BrasilfoneAPI
             raise 'Invalid Paramenters' unless param_exists
           end
 
-          @uri = URIConstants::BRASILFONE_BASE_URI
-          append_service
-          append_credentials
-          append_parameters
+          uri = URI(URIConstants::BRASILFONE_BASE_URI)
+          uri.query = uri_parameters
+          uri
         end
 
         private
 
-        def append_service
-          @uri += "&service=#{URIConstants::SERVICES_NAMES[@service]}"
+        def uri_parameters
+          parameters = {}
+          parameters.merge!(service_parameter)
+          parameters.merge!(credential_parameters)
+          parameters.merge!(other_parameters)
+          URI.encode_www_form(parameters)
         end
 
-        def append_credentials
+        def service_parameter
+          { service: URIConstants::SERVICES_NAMES[@service] }
+        end
+
+        def credential_parameters
           username = BrasilfoneAPI.config.username
           password = BrasilfoneAPI.config.password
-          @uri += "&username=#{username}&password=#{password}"
+          { username: username, password: password }
         end
 
-        def append_parameters
+        def other_parameters
+          other_params = {}
           @parameters.each do |param, value|
             param_name = URIConstants::PARAMETERS_NAMES[param]
-            uri_param = "&#{param_name}=#{value}"
-            @uri += uri_param
+            other_params[param_name] = value
           end
+          other_params
         end
       end
     end
