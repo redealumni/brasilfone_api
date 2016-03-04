@@ -37,7 +37,9 @@ RSpec.describe BrasilfoneAPI do
   end
 
   it 'finds sms status by range' do
-    response = BrasilfoneAPI.sms_status_by_date_range('12/06/199', '03/03/2016')
+    start_date = '2016-01-01 00:00:00'
+    end_date = '2016-03-03 00:00:00'
+    response = BrasilfoneAPI.sms_status_by_date_range(start_date, end_date)
     expect(response.class).to eql Hash
   end
 
