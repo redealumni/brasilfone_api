@@ -40,7 +40,7 @@ Those are the methods that can be called from the module:
 BrasilfoneAPI.send_sms('phone_number', 'message text')
 BrasilfoneAPI.sms_status('sms_id')
 BrasilfoneAPI.balance
-BrasilfoneAPI.sms_status_by_date_range('start date', 'end date')
+BrasilfoneAPI.sms_status_by_date_range('start date', 'end date') #yyyy-mm-dd hh:mm:ss
 BrasilfoneAPI.reply_status_for_sms('sms_id')
 ```
 
