@@ -15,7 +15,7 @@ module BrasilfoneAPI
     def send_sms(destination, text)
       HttpAPIHandler.send_request_for_service(
         :SEND_SMS,
-        destination: destination,
+        destination: parse_phone_number(destination),
         text: text
       )
     end
@@ -44,6 +44,15 @@ module BrasilfoneAPI
         :GET_SMS_STATUS,
         id: sms_id
       )
+    end
+
+    private
+
+    def parse_phone_number(phone_number)
+      # Remove non Digits
+      phone_number.gsub!(/\D/, '')
+      # Remove leading zeros
+      phone_number.gsub!(/^0+/, '')
     end
   end
 end
