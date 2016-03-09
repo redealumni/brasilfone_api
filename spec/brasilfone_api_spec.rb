@@ -47,4 +47,11 @@ RSpec.describe BrasilfoneAPI do
     response = BrasilfoneAPI.reply_status_for_sms('sms_id')
     expect(response.class).to eql Hash
   end
+
+  describe '.parse_phone_number' do
+    it 'returns a phone number in the correct format' do
+      expect(BrasilfoneAPI.send(:parse_phone_number, '0 0(011) 3453-3124!num'))
+        .to eql('1134533124')
+    end
+  end
 end
