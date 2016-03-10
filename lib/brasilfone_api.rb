@@ -1,5 +1,6 @@
 require 'brasilfone_api/version'
 require 'brasilfone_api/configuration'
+require 'brasilfone_api/phone_parser'
 require 'brasilfone_api/http_api_handler'
 
 module BrasilfoneAPI
@@ -13,9 +14,10 @@ module BrasilfoneAPI
     end
 
     def send_sms(destination, text)
+      parsed_phone = BrasilfoneAPI::PhoneParser.parse_phone_number(destination)
       HttpAPIHandler.send_request_for_service(
         :SEND_SMS,
-        destination: destination,
+        destination: parsed_phone,
         text: text
       )
     end

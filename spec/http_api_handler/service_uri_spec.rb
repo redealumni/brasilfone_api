@@ -1,6 +1,7 @@
 require 'brasilfone_api'
 require 'uri'
 require 'brasilfone_api/http_api_handler/service_uri'
+require 'webmock/rspec'
 
 RSpec.describe BrasilfoneAPI::HttpAPIHandler::ServiceURI do 
   before(:all) do
@@ -9,6 +10,16 @@ RSpec.describe BrasilfoneAPI::HttpAPIHandler::ServiceURI do
       config.password = 'combatatas'
     end
 
+    xml = '<note>
+           <to>Earth</to>
+           <from>Phobos</from>
+           <heading>Strange noises</heading>
+           <body>Staff personnel are complaining about strange noises</body>
+           </note>'
+
+    stub_request(:any, /.*brasilfone.*/)
+      .to_return(body: xml, status: 200,
+                 headers: { 'Content-Length' => 3 })
     @text = URI.escape('Test message to be sent')
     @destination = '202-456-1414'
   end
@@ -20,7 +31,7 @@ RSpec.describe BrasilfoneAPI::HttpAPIHandler::ServiceURI do
         text: @text,
         destination: @destination
       )
-      expect(uri).to eql "http://api.brasilfone.com.br/?&service=SendSMS&username=frango&password=combatatas&text=Test%20message%20to%20be%20sent&to=202-456-1414"
+      expect(uri.to_s).to eql 'http://api.brasilfone.com.br/?service=SendSMS&username=frango&password=combatatas&text=Test%2520message%2520to%2520be%2520sent&to=202-456-1414'
     end
   end
 end
