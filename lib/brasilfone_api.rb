@@ -1,5 +1,6 @@
 require 'brasilfone_api/version'
 require 'brasilfone_api/configuration'
+require 'brasilfone_api/phone_parser'
 require 'brasilfone_api/http_api_handler'
 
 module BrasilfoneAPI
@@ -13,9 +14,10 @@ module BrasilfoneAPI
     end
 
     def send_sms(destination, text)
+      parsed_phone = BrasilfoneAPI::PhoneParser.parse_phone_number(destination)
       HttpAPIHandler.send_request_for_service(
         :SEND_SMS,
-        destination: parse_phone_number(destination),
+        destination: parsed_phone,
         text: text
       )
     end
@@ -44,15 +46,6 @@ module BrasilfoneAPI
         :GET_SMS_STATUS,
         id: sms_id
       )
-    end
-
-    private
-
-    def parse_phone_number(phone_number)
-      # Remove non Digits
-      phone_number.gsub!(/\D/, '')
-      # Remove leading zeros
-      phone_number.gsub!(/^0+/, '')
     end
   end
 end
